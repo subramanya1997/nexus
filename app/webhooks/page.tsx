@@ -31,13 +31,14 @@ import {
   Plus,
   Search,
   Copy,
-  Check,  Webhook,
+  Check,
+  Webhook,
   ExternalLink,
-  Pause,
-  Play,
   Trash2,
   ChevronLeft,
   ChevronRight,
+  Circle,
+  CircleDot,
 } from "lucide-react";
 
 const ITEMS_PER_PAGE = 10;
@@ -76,6 +77,19 @@ export default function WebhooksPage() {
   const uniqueAgents = Array.from(
     new Set(mockWebhooks.map((w) => JSON.stringify({ id: w.targetAgentId, name: w.targetAgentName })))
   ).map((s) => JSON.parse(s));
+
+  // Status counts
+  const statusCounts = {
+    all: mockWebhooks.length,
+    active: mockWebhooks.filter((w) => w.status === "active").length,
+    inactive: mockWebhooks.filter((w) => w.status === "inactive").length,
+  };
+
+  const statusFilters: { value: string; label: string; icon?: React.ReactNode }[] = [
+    { value: "all", label: "All" },
+    { value: "active", label: "Active", icon: <CircleDot className="h-3.5 w-3.5" /> },
+    { value: "inactive", label: "Inactive", icon: <Circle className="h-3.5 w-3.5" /> },
+  ];
 
   return (
     <>
@@ -188,7 +202,7 @@ export default function WebhooksPage() {
             <div>
               <h1 className="text-2xl font-bold text-stone-50">Webhooks</h1>
               <p className="mt-1 text-sm text-stone-400">
-                {filteredWebhooks.length} webhook{filteredWebhooks.length !== 1 ? "s" : ""} configured
+                Trigger agents from external services via HTTP endpoints
               </p>
             </div>
           </div>
@@ -211,80 +225,26 @@ export default function WebhooksPage() {
             </div>
 
             {/* Status Filter */}
-            <div className="flex items-center gap-2">
-              <Button
-                variant={statusFilter === "all" ? "default" : "outline"}
-                size="sm"
-                onClick={() => {
-                  setStatusFilter("all");
-                  setCurrentPage(1);
-                }}
-                className={
-                  statusFilter === "all"
-                    ? "bg-amber-600 hover:bg-amber-500"
-                    : "border-stone-700 text-stone-300"
-                }
-              >
-                All
-              </Button>
-              <Button
-                variant={statusFilter === "active" ? "default" : "outline"}
-                size="sm"
-                onClick={() => {
-                  setStatusFilter("active");
-                  setCurrentPage(1);
-                }}
-                className={
-                  statusFilter === "active"
-                    ? "bg-green-600 hover:bg-green-500"
-                    : "border-stone-700 text-stone-300"
-                }
-              >
-                Active
-              </Button>
-              <Button
-                variant={statusFilter === "inactive" ? "default" : "outline"}
-                size="sm"
-                onClick={() => {
-                  setStatusFilter("inactive");
-                  setCurrentPage(1);
-                }}
-                className={
-                  statusFilter === "inactive"
-                    ? "bg-stone-600 hover:bg-stone-500"
-                    : "border-stone-700 text-stone-300"
-                }
-              >
-                Inactive
-              </Button>
+            <div className="flex items-center gap-1 p-1 rounded-lg bg-stone-900/50 border border-stone-800">
+              {statusFilters.map((filter) => (
+                <button
+                  key={filter.value}
+                  onClick={() => {
+                    setStatusFilter(filter.value);
+                    setCurrentPage(1);
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                    statusFilter === filter.value
+                      ? "bg-stone-800 text-stone-100"
+                      : "text-stone-400 hover:text-stone-300"
+                  }`}
+                >
+                  {filter.icon}
+                  {filter.label}
+                  <span className="text-stone-500 ml-1">{statusCounts[filter.value as keyof typeof statusCounts]}</span>
+                </button>
+              ))}
             </div>
-
-            {/* Agent Filter */}
-            <Select
-              value={agentFilter}
-              onValueChange={(value) => {
-                setAgentFilter(value);
-                setCurrentPage(1);
-              }}
-            >
-              <SelectTrigger className="w-[200px] bg-stone-900 border-stone-700 text-stone-200">
-                <SelectValue placeholder="Filter by agent" />
-              </SelectTrigger>
-              <SelectContent className="bg-stone-800 border-stone-700">
-                <SelectItem value="all" className="text-stone-200 focus:bg-stone-700">
-                  All Agents
-                </SelectItem>
-                {uniqueAgents.map((agent) => (
-                  <SelectItem
-                    key={agent.id}
-                    value={agent.id}
-                    className="text-stone-200 focus:bg-stone-700"
-                  >
-                    {agent.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
 
           {/* Webhooks Table */}

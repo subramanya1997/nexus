@@ -295,3 +295,57 @@ export interface MCPServerStats {
   lastCalledAt?: string;
 }
 
+// ============ Custom MCP Server Types ============
+export type MCPServerType = "agent" | "custom";
+export type MCPAuthType = "api_key" | "oauth2" | "none";
+
+export interface SelectedTool {
+  sourceType: "integration" | "agent";
+  sourceId: string;
+  sourceName: string;
+  toolName: string;
+  toolDescription: string;
+  category: "read" | "write" | "action";
+  parameters: ToolParameter[];
+}
+
+export interface ToolParameter {
+  name: string;
+  type: string;
+  description: string;
+  required: boolean;
+}
+
+export interface CustomMCPServer {
+  id: string;
+  name: string;
+  description: string;
+  serverUrl: string;
+  type: MCPServerType;
+  authType: MCPAuthType;
+  rateLimitPerMinute?: number;
+  selectedTools: SelectedTool[];
+  stats: {
+    totalCalls: number;
+    successRate: number;
+    avgLatency: number;
+    uniqueClients: number;
+    lastCalledAt?: string;
+  };
+  createdAt: string;
+  createdBy: string;
+}
+
+export interface MCPToolInvocation {
+  id: string;
+  serverId: string;
+  toolName: string;
+  timestamp: string;
+  duration: number;
+  status: "success" | "error";
+  clientId: string;
+  input: Record<string, unknown>;
+  output?: Record<string, unknown>;
+  error?: string;
+}
+

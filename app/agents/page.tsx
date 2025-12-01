@@ -14,8 +14,8 @@ import {
   ChevronLeft, 
   ChevronRight,
   Search,
-  Filter,
-  SlidersHorizontal
+  CircleDot,
+  Circle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -40,6 +40,19 @@ export default function AgentsPage() {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedAgents = filteredAgents.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
+  // Status counts
+  const statusCounts = {
+    all: mockAgents.length,
+    active: mockAgents.filter((a) => a.status === "active").length,
+    paused: mockAgents.filter((a) => a.status === "paused").length,
+  };
+
+  const statusFilters: { value: string; label: string; icon?: React.ReactNode }[] = [
+    { value: "all", label: "All" },
+    { value: "active", label: "Active", icon: <CircleDot className="h-3.5 w-3.5" /> },
+    { value: "paused", label: "Paused", icon: <Circle className="h-3.5 w-3.5" /> },
+  ];
+
   return (
     <>
       <Header />
@@ -50,13 +63,13 @@ export default function AgentsPage() {
             <div>
               <h1 className="text-2xl font-bold text-stone-50">Agents</h1>
               <p className="mt-1 text-sm text-stone-400">
-                {filteredAgents.length} agent{filteredAgents.length !== 1 ? 's' : ''} total
+                Manage and monitor your AI agents
               </p>
             </div>
           </div>
 
           {/* Filters Row */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-500" />
@@ -73,38 +86,26 @@ export default function AgentsPage() {
             </div>
 
             {/* Status Filter */}
-            <div className="flex items-center gap-2">
-              <Button
-                variant={statusFilter === "all" ? "default" : "outline"}
-                size="sm"
-                onClick={() => { setStatusFilter("all"); setCurrentPage(1); }}
-                className={statusFilter === "all" ? "bg-amber-600 hover:bg-amber-500" : "border-stone-700 text-stone-300"}
-              >
-                All
-              </Button>
-              <Button
-                variant={statusFilter === "active" ? "default" : "outline"}
-                size="sm"
-                onClick={() => { setStatusFilter("active"); setCurrentPage(1); }}
-                className={statusFilter === "active" ? "bg-green-600 hover:bg-green-500" : "border-stone-700 text-stone-300"}
-              >
-                Active
-              </Button>
-              <Button
-                variant={statusFilter === "paused" ? "default" : "outline"}
-                size="sm"
-                onClick={() => { setStatusFilter("paused"); setCurrentPage(1); }}
-                className={statusFilter === "paused" ? "bg-stone-600 hover:bg-stone-500" : "border-stone-700 text-stone-300"}
-              >
-                Paused
-              </Button>
+            <div className="flex items-center gap-1 p-1 rounded-lg bg-stone-900/50 border border-stone-800">
+              {statusFilters.map((filter) => (
+                <button
+                  key={filter.value}
+                  onClick={() => {
+                    setStatusFilter(filter.value);
+                    setCurrentPage(1);
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                    statusFilter === filter.value
+                      ? "bg-stone-800 text-stone-100"
+                      : "text-stone-400 hover:text-stone-300"
+                  }`}
+                >
+                  {filter.icon}
+                  {filter.label}
+                  <span className="text-stone-500 ml-1">{statusCounts[filter.value as keyof typeof statusCounts]}</span>
+                </button>
+              ))}
             </div>
-
-            {/* More Filters */}
-            <Button variant="outline" size="sm" className="border-stone-700 text-stone-300">
-              <SlidersHorizontal className="h-4 w-4 mr-2" />
-              More Filters
-            </Button>
           </div>
 
           {/* Agents Table */}

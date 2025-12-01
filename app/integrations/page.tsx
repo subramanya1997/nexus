@@ -54,7 +54,7 @@ export default function IntegrationsPage() {
           <div>
             <h1 className="text-2xl font-bold text-stone-50">Integrations</h1>
             <p className="mt-1 text-sm text-stone-400">
-              {connectedIntegrations.length} connected, {availableIntegrations.length} available
+              Connect third-party services to extend agent capabilities
             </p>
           </div>
 
