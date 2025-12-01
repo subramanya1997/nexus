@@ -118,8 +118,8 @@ export default function IntegrationDetailPage() {
   return (
     <>
       <Header actionButton={null} />
-      <main className="flex-1 overflow-y-auto">
-        <div className="max-w-6xl mx-auto px-6 py-8">
+      <main className="flex-1 overflow-y-auto overflow-x-hidden">
+        <div className="max-w-6xl mx-auto px-6 py-8 min-w-0">
           {/* Back Link */}
           <Link 
             href="/integrations" 

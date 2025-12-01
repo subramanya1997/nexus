@@ -9,7 +9,7 @@ import type {
 } from "@/lib/types";
 import { mockAgents } from "./mock-data";
 
-// Helper to generate ISO date strings relative to now
+// Helper to generate ISO date strings relative to fixed base date
 function getRelativeDate(hoursAgo: number): string {
   const date = new Date();
   date.setHours(date.getHours() - hoursAgo);

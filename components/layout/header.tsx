@@ -5,6 +5,7 @@ import { Bell, Search, HelpCircle, ChevronRight, Sparkles, Clock, Copy, MoreHori
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
+import { Plus } from "lucide-react";
 
 interface HeaderProps {
   // For agent builder page
@@ -85,12 +86,12 @@ export function Header({
 
   // Default header with search
   return (
-    <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-4 border-b border-stone-800 bg-stone-950 px-4">
-      <SidebarTrigger className="-ml-1 text-stone-400 hover:text-stone-200" />
-      <Separator orientation="vertical" className="h-4 bg-stone-700" />
+    <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-4 border-b border-stone-800 bg-stone-950 px-4 min-w-0">
+      <SidebarTrigger className="-ml-1 text-stone-400 hover:text-stone-200 shrink-0" />
+      <Separator orientation="vertical" className="h-4 bg-stone-700 shrink-0" />
       
       {/* Search */}
-      <div className="flex-1 max-w-xl">
+      <div className="flex-1 max-w-xl min-w-0">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-500" />
           <input
@@ -102,10 +103,10 @@ export function Header({
       </div>
 
       {/* Spacer */}
-      <div className="flex-1" />
+      <div className="flex-1 min-w-0" />
 
       {/* Actions */}
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 shrink-0">
         <Button variant="ghost" size="icon" className="h-8 w-8 text-stone-400 hover:text-stone-200 hover:bg-stone-800">
           <HelpCircle className="h-4 w-4" />
         </Button>
@@ -119,6 +120,7 @@ export function Header({
             {actionButton ?? (
               <Link href="/agents/new">
                 <Button size="sm" className="bg-amber-600 hover:bg-amber-500 text-white font-medium">
+                  <Plus className="h-4 w-4 mr-2" />
                   Create Agent
                 </Button>
               </Link>

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import {
   LayoutDashboard,
   Bot,
@@ -14,6 +15,23 @@ import {
   Webhook,
   Building2,
 } from "lucide-react"
+
+// Custom MCP icon component to match Lucide icon interface
+const McpIcon = React.forwardRef<
+  HTMLSpanElement,
+  React.HTMLAttributes<HTMLSpanElement>
+>(({ className, ...props }, ref) => (
+  <span ref={ref} className={className} {...props}>
+    <Image
+      src="/icons/mcp.svg"
+      alt="MCP"
+      width={16}
+      height={16}
+      className="size-4 brightness-0 invert"
+    />
+  </span>
+)) as React.FC
+McpIcon.displayName = "McpIcon"
 
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
@@ -48,6 +66,11 @@ const data = {
       title: "Webhooks",
       url: "/webhooks",
       icon: Webhook,
+    },
+    {
+      title: "MCP Registry",
+      url: "/mcp-registry",
+      icon: McpIcon,
     },
   ],
   dashboard: [

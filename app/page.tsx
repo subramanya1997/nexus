@@ -28,8 +28,8 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className="flex-1 overflow-y-auto p-6">
-        <div className="space-y-6">
+      <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
+        <div className="space-y-6 min-w-0">
           {/* Header */}
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-stone-50">Overview</h1>

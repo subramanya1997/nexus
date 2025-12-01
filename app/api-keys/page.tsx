@@ -39,8 +39,8 @@ export default function ApiKeysPage() {
           </Button>
         }
       />
-      <main className="flex-1 overflow-y-auto p-6">
-        <div className="space-y-6">
+      <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
+        <div className="space-y-6 min-w-0">
           <div>
             <h1 className="text-2xl font-bold text-stone-50">API Keys</h1>
             <p className="mt-1 text-sm text-stone-400">Manage API keys for programmatic access</p>

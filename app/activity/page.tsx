@@ -18,11 +18,12 @@ import {
   RefreshCw,
   Search,
   Download,
+  Timer,
 } from "lucide-react";
-import { ExecutionsTab, AuditLogTab } from "@/components/activity";
+import { ExecutionsTab, AuditLogTab, TriggersTab } from "@/components/activity";
 import { mockExecutionTraces } from "@/lib/data/activity-data";
 
-type TabType = "executions" | "audit";
+type TabType = "executions" | "triggers" | "audit";
 type DateRange = "7d" | "14d" | "30d";
 
 const eventTypeOptions = [
@@ -53,6 +54,10 @@ export default function ActivityPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [agentFilter, setAgentFilter] = useState<string>("all");
   
+  // Triggers-specific filters
+  const [triggerTypeFilter, setTriggerTypeFilter] = useState<string>("all");
+  const [triggerStatusFilter, setTriggerStatusFilter] = useState<string>("all");
+  
   // Audit-specific filters
   const [typeFilter, setTypeFilter] = useState<string>("all");
 
@@ -62,6 +67,7 @@ export default function ActivityPage() {
 
   const tabs = [
     { id: "executions" as const, label: "Executions", icon: Activity },
+    { id: "triggers" as const, label: "Triggers", icon: Timer },
     { id: "audit" as const, label: "Audit Log", icon: ScrollText },
   ];
 
@@ -91,8 +97,8 @@ export default function ActivityPage() {
           </Button>
         }
       />
-      <main className="flex-1 overflow-y-auto p-6">
-        <div className="space-y-6">
+      <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
+        <div className="space-y-6 min-w-0">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
@@ -148,7 +154,13 @@ export default function ActivityPage() {
               <div className="relative w-[280px]">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-500" />
                 <Input
-                  placeholder={activeTab === "executions" ? "Search executions..." : "Search events..."}
+                  placeholder={
+                    activeTab === "executions" 
+                      ? "Search executions..." 
+                      : activeTab === "triggers"
+                      ? "Search triggers..."
+                      : "Search events..."
+                  }
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-9 bg-stone-900 border-stone-700 text-stone-200 placeholder:text-stone-500"
@@ -200,6 +212,48 @@ export default function ActivityPage() {
                 </>
               )}
 
+              {/* Triggers-specific filters */}
+              {activeTab === "triggers" && (
+                <>
+                  <Select value={triggerTypeFilter} onValueChange={setTriggerTypeFilter}>
+                    <SelectTrigger className="w-[130px] border-stone-700 bg-stone-900 text-stone-300">
+                      <SelectValue placeholder="Type" />
+                    </SelectTrigger>
+                    <SelectContent className="border-stone-700 bg-stone-900">
+                      <SelectItem value="all" className="text-stone-300 focus:bg-stone-800">
+                        All Types
+                      </SelectItem>
+                      <SelectItem value="webhook" className="text-stone-300 focus:bg-stone-800">
+                        Webhook
+                      </SelectItem>
+                      <SelectItem value="scheduled" className="text-stone-300 focus:bg-stone-800">
+                        Scheduled
+                      </SelectItem>
+                      <SelectItem value="api" className="text-stone-300 focus:bg-stone-800">
+                        API
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <Select value={triggerStatusFilter} onValueChange={setTriggerStatusFilter}>
+                    <SelectTrigger className="w-[130px] border-stone-700 bg-stone-900 text-stone-300">
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent className="border-stone-700 bg-stone-900">
+                      <SelectItem value="all" className="text-stone-300 focus:bg-stone-800">
+                        All Status
+                      </SelectItem>
+                      <SelectItem value="active" className="text-stone-300 focus:bg-stone-800">
+                        Active
+                      </SelectItem>
+                      <SelectItem value="inactive" className="text-stone-300 focus:bg-stone-800">
+                        Inactive
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </>
+              )}
+
               {/* Audit-specific filters */}
               {activeTab === "audit" && (
                 <>
@@ -240,6 +294,13 @@ export default function ActivityPage() {
               searchQuery={searchQuery}
               statusFilter={statusFilter}
               agentFilter={agentFilter}
+            />
+          )}
+          {activeTab === "triggers" && (
+            <TriggersTab 
+              searchQuery={searchQuery}
+              typeFilter={triggerTypeFilter}
+              statusFilter={triggerStatusFilter}
             />
           )}
           {activeTab === "audit" && (

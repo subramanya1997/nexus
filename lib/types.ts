@@ -227,3 +227,71 @@ export interface ActivityEvent {
   };
 }
 
+// ============ Trigger Types ============
+export type TriggerType = "webhook" | "scheduled" | "api";
+export type TriggerStatus = "active" | "inactive";
+
+export interface WebhookTriggerConfig {
+  webhookId: string;
+  webhookUrl: string;
+  authType: "none" | "hmac" | "bearer" | "basic";
+}
+
+export interface ScheduledTriggerConfig {
+  cronExpression: string;
+  timezone: string;
+  nextRunAt?: string;
+  lastRunAt?: string;
+}
+
+export interface ApiTriggerConfig {
+  endpoint: string;
+  method: "GET" | "POST" | "PUT" | "DELETE";
+  apiKeyRequired: boolean;
+}
+
+export type TriggerConfig = 
+  | WebhookTriggerConfig 
+  | ScheduledTriggerConfig 
+  | ApiTriggerConfig;
+
+export interface AgentTrigger {
+  id: string;
+  type: TriggerType;
+  name: string;
+  agentId: string;
+  agentName: string;
+  enabled: boolean;
+  createdAt: string;
+  config: TriggerConfig;
+  lastTriggered?: string;
+  triggerCount: number;
+}
+
+// ============ Extended Agent Types ============
+export interface ExtendedAgent extends Agent {
+  triggers: AgentTrigger[];
+  mcpConfig?: MCPServerConfig;
+}
+
+// ============ MCP Server Types ============
+export interface MCPServerConfig {
+  enabled: boolean;
+  serverUrl?: string;
+  toolName: string;
+  toolDescription: string;
+  authRequired: boolean;
+  authType?: "api_key" | "oauth2" | "none";
+  rateLimitPerMinute?: number;
+  allowedOrigins?: string[];
+}
+
+export interface MCPServerStats {
+  agentId: string;
+  totalCalls: number;
+  successRate: number;
+  avgLatency: number;
+  uniqueClients: number;
+  lastCalledAt?: string;
+}
+

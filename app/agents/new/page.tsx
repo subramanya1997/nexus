@@ -23,8 +23,31 @@ import {
   PanelRight,
   PanelRightClose,
   ArrowLeft,
+  Code,
+  Webhook,
+  Calendar,
+  Settings,
+  Shield,
 } from "lucide-react";
 import Link from "next/link";
+import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Available integrations for @ mentions
 const availableIntegrations = [
@@ -79,6 +102,15 @@ const llmProviders = [
   },
 ];
 
+// Schedule trigger type
+interface ScheduleTrigger {
+  id: string;
+  name: string;
+  cron: string;
+  timezone: string;
+  enabled: boolean;
+}
+
 export default function NewAgentPage() {
   const [agentName, setAgentName] = useState("New Agent");
   const [contexts, setContexts] = useState<{ name: string; type: string }[]>([]);
@@ -96,6 +128,16 @@ export default function NewAgentPage() {
   const [mentionFilter, setMentionFilter] = useState("");
   const [mentionPosition, setMentionPosition] = useState({ top: 0, left: 0 });
   const [selectedMentionIndex, setSelectedMentionIndex] = useState(0);
+  
+  // Triggers state
+  const [apiEnabled, setApiEnabled] = useState(true);
+  const [mcpEnabled, setMcpEnabled] = useState(false);
+  const [webhookEnabled, setWebhookEnabled] = useState(false);
+  const [scheduledTriggers, setScheduledTriggers] = useState<ScheduleTrigger[]>([]);
+  const [isAddScheduleOpen, setIsAddScheduleOpen] = useState(false);
+  const [newScheduleName, setNewScheduleName] = useState("");
+  const [newScheduleCron, setNewScheduleCron] = useState("");
+  const [newScheduleTimezone, setNewScheduleTimezone] = useState("utc");
   
   const modelDropdownRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -268,6 +310,32 @@ export default function NewAgentPage() {
     setContexts(prev => prev.filter(c => c.name !== name));
   };
 
+  const addScheduledTrigger = () => {
+    if (!newScheduleName || !newScheduleCron) return;
+    const newTrigger: ScheduleTrigger = {
+      id: `schedule-${Date.now()}`,
+      name: newScheduleName,
+      cron: newScheduleCron,
+      timezone: newScheduleTimezone,
+      enabled: true,
+    };
+    setScheduledTriggers(prev => [...prev, newTrigger]);
+    setNewScheduleName("");
+    setNewScheduleCron("");
+    setNewScheduleTimezone("utc");
+    setIsAddScheduleOpen(false);
+  };
+
+  const removeScheduledTrigger = (id: string) => {
+    setScheduledTriggers(prev => prev.filter(t => t.id !== id));
+  };
+
+  const toggleScheduledTrigger = (id: string) => {
+    setScheduledTriggers(prev => 
+      prev.map(t => t.id === id ? { ...t, enabled: !t.enabled } : t)
+    );
+  };
+
   const ProviderIcon = getProviderIcon(selectedModel.provider);
 
   return (
@@ -307,9 +375,9 @@ export default function NewAgentPage() {
       </header>
 
       {/* Main Content */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden min-w-0">
         {/* Left Panel - Document View */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden min-w-0">
           <div className="max-w-3xl mx-auto px-8 py-10">
             {/* Agent Title + Run Button */}
             <div className="flex items-center justify-between mb-6">
@@ -326,7 +394,7 @@ export default function NewAgentPage() {
               </Button>
             </div>
 
-            {/* Model & Schedule Row */}
+            {/* Model Row */}
             <div className="flex items-center gap-4 mb-6">
               {/* Model Selector Dropdown */}
               <div className="relative" ref={modelDropdownRef}>
@@ -369,12 +437,182 @@ export default function NewAgentPage() {
                   </div>
                 )}
               </div>
-
-              <button className="text-sm text-stone-500 hover:text-stone-300 flex items-center gap-1 transition-colors">
-                <Plus className="h-4 w-4" />
-                Add schedule/trigger
-              </button>
             </div>
+
+            {/* Triggers Section */}
+            <div className="mb-6 pb-6 border-b border-stone-800">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="font-semibold text-stone-100">Triggers</h2>
+                <button 
+                  onClick={() => setIsAddScheduleOpen(true)}
+                  className="text-sm text-amber-500 hover:text-amber-400 flex items-center gap-1 transition-colors"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add schedule
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {/* Manual API Trigger */}
+                <div className="flex items-center justify-between p-3 rounded-lg border border-stone-800 bg-stone-900/50">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-lg bg-green-950 flex items-center justify-center">
+                      <Code className="h-4 w-4 text-green-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-stone-200">Manual API</p>
+                      <p className="text-xs text-stone-500">Invoke via REST API</p>
+                    </div>
+                  </div>
+                  <Switch checked={apiEnabled} onCheckedChange={setApiEnabled} />
+                </div>
+
+                {/* MCP Server Trigger */}
+                <div className="flex items-center justify-between p-3 rounded-lg border border-stone-800 bg-stone-900/50">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-lg bg-amber-950 flex items-center justify-center">
+                      <Zap className="h-4 w-4 text-amber-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-stone-200">MCP Server</p>
+                      <p className="text-xs text-stone-500">Expose as MCP tool</p>
+                    </div>
+                  </div>
+                  <Switch checked={mcpEnabled} onCheckedChange={setMcpEnabled} />
+                </div>
+
+                {/* Webhook Trigger */}
+                <div className="flex items-center justify-between p-3 rounded-lg border border-stone-800 bg-stone-900/50">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-lg bg-purple-950 flex items-center justify-center">
+                      <Webhook className="h-4 w-4 text-purple-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-stone-200">Webhook</p>
+                      <p className="text-xs text-stone-500">Trigger via HTTP webhook</p>
+                    </div>
+                  </div>
+                  <Switch checked={webhookEnabled} onCheckedChange={setWebhookEnabled} />
+                </div>
+
+                {/* Scheduled Triggers */}
+                {scheduledTriggers.map((trigger) => (
+                  <div 
+                    key={trigger.id}
+                    className="flex items-center justify-between p-3 rounded-lg border border-stone-800 bg-stone-900/50"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-lg bg-blue-950 flex items-center justify-center">
+                        <Calendar className="h-4 w-4 text-blue-400" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-stone-200">{trigger.name}</p>
+                        <p className="text-xs text-stone-500 font-mono">{trigger.cron}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Switch 
+                        checked={trigger.enabled} 
+                        onCheckedChange={() => toggleScheduledTrigger(trigger.id)} 
+                      />
+                      <button 
+                        onClick={() => removeScheduledTrigger(trigger.id)}
+                        className="p-1 text-stone-500 hover:text-red-400 transition-colors"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Add Schedule Dialog */}
+            <Dialog open={isAddScheduleOpen} onOpenChange={setIsAddScheduleOpen}>
+              <DialogContent className="bg-stone-900 border-stone-800 sm:max-w-[500px]">
+                <DialogHeader>
+                  <DialogTitle className="text-stone-100">Add Scheduled Trigger</DialogTitle>
+                  <DialogDescription className="text-stone-400">
+                    Configure a cron-based schedule for this agent.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label className="text-stone-200">Name</Label>
+                    <Input
+                      value={newScheduleName}
+                      onChange={(e) => setNewScheduleName(e.target.value)}
+                      placeholder="e.g., Daily Report Generation"
+                      className="bg-stone-800 border-stone-700 text-stone-200 placeholder:text-stone-500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-stone-200">Schedule (Cron Expression)</Label>
+                    <Input
+                      value={newScheduleCron}
+                      onChange={(e) => setNewScheduleCron(e.target.value)}
+                      placeholder="0 8 * * 1"
+                      className="bg-stone-800 border-stone-700 text-stone-200 placeholder:text-stone-500 font-mono"
+                    />
+                    <p className="text-xs text-stone-500">
+                      Example: "0 8 * * 1" = Every Monday at 8 AM
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-stone-200">Timezone</Label>
+                    <Select value={newScheduleTimezone} onValueChange={setNewScheduleTimezone}>
+                      <SelectTrigger className="bg-stone-800 border-stone-700 text-stone-200">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-stone-800 border-stone-700">
+                        <SelectItem value="utc" className="text-stone-200 focus:bg-stone-700">
+                          UTC
+                        </SelectItem>
+                        <SelectItem value="america_new_york" className="text-stone-200 focus:bg-stone-700">
+                          America/New_York (EST)
+                        </SelectItem>
+                        <SelectItem value="america_los_angeles" className="text-stone-200 focus:bg-stone-700">
+                          America/Los_Angeles (PST)
+                        </SelectItem>
+                        <SelectItem value="europe_london" className="text-stone-200 focus:bg-stone-700">
+                          Europe/London (GMT)
+                        </SelectItem>
+                        <SelectItem value="asia_tokyo" className="text-stone-200 focus:bg-stone-700">
+                          Asia/Tokyo (JST)
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="rounded-lg bg-blue-950/30 border border-blue-800/50 p-3">
+                    <div className="flex items-start gap-2">
+                      <Clock className="h-4 w-4 text-blue-400 mt-0.5 shrink-0" />
+                      <div>
+                        <p className="text-xs text-blue-200 font-medium">Next Run Preview</p>
+                        <p className="text-xs text-blue-300/70 mt-0.5">
+                          Will be calculated after creation
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsAddScheduleOpen(false)}
+                    className="border-stone-700 text-stone-300"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="bg-amber-600 hover:bg-amber-500 text-white"
+                    onClick={addScheduledTrigger}
+                    disabled={!newScheduleName || !newScheduleCron}
+                  >
+                    Add Schedule
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
             {/* Connected Integrations Row */}
             <div className="flex items-center gap-2 flex-wrap mb-6 pb-6 border-b border-stone-800">
@@ -522,20 +760,6 @@ export default function NewAgentPage() {
               </button>
             </div>
 
-            {/* Activity Section */}
-            <div className="mt-12 pt-6 border-t border-stone-800">
-              <h2 className="font-semibold text-stone-100 mb-4">Activity</h2>
-              <Card className="bg-stone-900 border-stone-800">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3 text-sm text-stone-500">
-                    <div className="h-6 w-6 rounded bg-amber-950 flex items-center justify-center">
-                      <Sparkles className="h-3 w-3 text-amber-400" />
-                    </div>
-                    <span>Draft created just now</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
           </div>
         </div>
 

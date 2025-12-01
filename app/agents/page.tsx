@@ -43,8 +43,8 @@ export default function AgentsPage() {
   return (
     <>
       <Header />
-      <main className="flex-1 overflow-y-auto p-6">
-        <div className="space-y-6">
+      <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
+        <div className="space-y-6 min-w-0">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
