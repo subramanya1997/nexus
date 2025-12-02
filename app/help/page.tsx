@@ -2,6 +2,7 @@
 
 import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { 
   MessageCircle, 
   Headphones, 
@@ -67,7 +68,7 @@ export default function HelpPage() {
             </div>
 
             <p className="text-sm text-stone-400 mb-10 max-w-md mx-auto leading-relaxed">
-              We're building a comprehensive help center to ensure you get the support you need, when you need it.
+              We&apos;re building a comprehensive help center to ensure you get the support you need, when you need it.
             </p>
 
             {/* Support channels grid */}
@@ -123,10 +124,10 @@ export default function HelpPage() {
                 className="border-stone-700 text-stone-400 hover:bg-stone-800 hover:text-stone-100 text-xs"
                 asChild
               >
-                <a href="/">
+                <Link href="/">
                   Back to Dashboard
                   <ArrowRight className="w-3 h-3 ml-1.5" />
-                </a>
+                </Link>
               </Button>
             </div>
 

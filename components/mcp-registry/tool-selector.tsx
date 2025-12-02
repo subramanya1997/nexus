@@ -14,7 +14,6 @@ import {
   ChevronDown,
   ChevronRight,
   Bot,
-  Zap,
   CheckSquare,
   Square,
 } from "lucide-react";

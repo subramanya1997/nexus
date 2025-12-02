@@ -110,12 +110,12 @@ export function AuditLogTab({ dateRange, searchQuery, typeFilter }: AuditLogTabP
                   <span className={`shrink-0 ${levelColor}`}>[{level}]</span>
                   <span className="text-stone-500 shrink-0">[{event.type}]</span>
                   {event.agentName && (
-                    <span className="text-cyan-600">agent="{event.agentName}"</span>
+                    <span className="text-cyan-600">agent=&quot;{event.agentName}&quot;</span>
                   )}
                   {event.executionId && (
                     <span className="text-stone-400">execution_id={event.executionId}</span>
                   )}
-                  <span className="text-stone-400">user="{event.userName}"</span>
+                  <span className="text-stone-400">user=&quot;{event.userName}&quot;</span>
                   {event.metadata?.region && (
                     <span className="text-stone-500">region={event.metadata.region}</span>
                   )}

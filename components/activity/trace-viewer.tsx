@@ -82,7 +82,7 @@ export function TraceViewer({ trace }: TraceViewerProps) {
     <div className="bg-stone-950 rounded border border-stone-800 overflow-hidden font-mono text-[11px]">
       {/* Header */}
       <div className="px-2 py-1.5 bg-stone-900 border-b border-stone-800 text-stone-500">
-        execution_id={trace.id} agent="{trace.agentName}" status={trace.status} trigger={trace.triggerType} triggered_by="{trace.triggeredBy}" duration={formatDuration(trace.duration)} cost=${trace.totalCost.toFixed(4)} steps={trace.totalSteps} success={trace.successfulSteps} failed={trace.failedSteps}
+        execution_id={trace.id} agent=&quot;{trace.agentName}&quot; status={trace.status} trigger={trace.triggerType} triggered_by=&quot;{trace.triggeredBy}&quot; duration={formatDuration(trace.duration)} cost=${trace.totalCost.toFixed(4)} steps={trace.totalSteps} success={trace.successfulSteps} failed={trace.failedSteps}
       </div>
       
       {/* Log entries */}

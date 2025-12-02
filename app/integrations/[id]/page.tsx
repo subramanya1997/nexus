@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Header } from "@/components/layout/header";
 import { getIntegrationIcon } from "@/lib/integration-icons";
-import { getIntegrationTools, Tool, Parameter } from "@/lib/data/integration-tools";
+import { getIntegrationTools, Tool } from "@/lib/data/integration-tools";
 import { 
   ArrowLeft, 
   Check, 
@@ -54,34 +54,38 @@ export default function IntegrationDetailPage() {
   const params = useParams();
   const integrationId = params.id as string;
   
+  return <IntegrationContent key={integrationId} integrationId={integrationId} />;
+}
+
+function IntegrationContent({ integrationId }: { integrationId: string }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<"all" | "read" | "write" | "action">("all");
   const [expandedTools, setExpandedTools] = useState<Set<string>>(new Set());
   const [editingTool, setEditingTool] = useState<string | null>(null);
   const [editingParam, setEditingParam] = useState<{ tool: string; param: string } | null>(null);
-  const [toolDescriptions, setToolDescriptions] = useState<Record<string, string>>({});
-  const [paramDescriptions, setParamDescriptions] = useState<Record<string, string>>({});
   
   const integration = getIntegrationTools(integrationId);
   const connectionStatus = connectedIntegrations[integrationId];
-  
-  // Initialize descriptions from data
-  useEffect(() => {
-    if (integration) {
-      const toolDescs: Record<string, string> = {};
-      const paramDescs: Record<string, string> = {};
-      
-      integration.tools.forEach(tool => {
-        toolDescs[tool.name] = tool.description;
-        tool.parameters.forEach(param => {
-          paramDescs[`${tool.name}.${param.name}`] = param.description;
-        });
+
+  const [toolDescriptions, setToolDescriptions] = useState<Record<string, string>>(() => {
+    if (!integration) return {};
+    const toolDescs: Record<string, string> = {};
+    integration.tools.forEach(tool => {
+      toolDescs[tool.name] = tool.description;
+    });
+    return toolDescs;
+  });
+
+  const [paramDescriptions, setParamDescriptions] = useState<Record<string, string>>(() => {
+    if (!integration) return {};
+    const paramDescs: Record<string, string> = {};
+    integration.tools.forEach(tool => {
+      tool.parameters.forEach(param => {
+        paramDescs[`${tool.name}.${param.name}`] = param.description;
       });
-      
-      setToolDescriptions(toolDescs);
-      setParamDescriptions(paramDescs);
-    }
-  }, [integration]);
+    });
+    return paramDescs;
+  });
   
   if (!integration) {
     notFound();

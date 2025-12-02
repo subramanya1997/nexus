@@ -73,11 +73,6 @@ export default function WebhooksPage() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  // Get unique agents for filter
-  const uniqueAgents = Array.from(
-    new Set(mockWebhooks.map((w) => JSON.stringify({ id: w.targetAgentId, name: w.targetAgentName })))
-  ).map((s) => JSON.parse(s));
-
   // Status counts
   const statusCounts = {
     all: mockWebhooks.length,

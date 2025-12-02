@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Image from "next/image"
+import Link from "next/link"
 import {
   LayoutDashboard,
   Bot,
@@ -138,9 +139,9 @@ function SidebarHeaderContent() {
               size="lg"
               className="data-[slot=sidebar-menu-button]:!p-2 hover:bg-transparent"
             >
-              <a href="/" className="flex items-center gap-2">
+              <Link href="/" className="flex items-center gap-2">
                 <span className="text-base font-semibold text-stone-100">Agentic Trust</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           )}
         </SidebarMenuItem>

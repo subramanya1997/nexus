@@ -115,7 +115,7 @@ export function TriggersList({ agentId, agentName, triggers }: TriggersListProps
                       className="bg-stone-800 border-stone-700 text-stone-200 placeholder:text-stone-500 font-mono"
                     />
                     <p className="text-xs text-stone-500">
-                      Example: "0 8 * * 1" = Every Monday at 8 AM
+                      Example: &quot;0 8 * * 1&quot; = Every Monday at 8 AM
                     </p>
                   </div>
                   <div className="space-y-2">

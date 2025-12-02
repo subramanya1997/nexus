@@ -16,6 +16,7 @@ import {
   Search,
   CircleDot,
   Circle,
+  Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -55,7 +56,17 @@ export default function AgentsPage() {
 
   return (
     <>
-      <Header subtitle="Manage and monitor your AI agents" />
+      <Header 
+        subtitle="Manage and monitor your AI agents"
+        actionButton={
+          <Link href="/agents/new">
+            <Button size="sm" className="bg-amber-600 hover:bg-amber-500 text-white">
+              <Plus className="h-4 w-4 mr-2" />
+              Create Agent
+            </Button>
+          </Link>
+        }
+      />
       <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
         <div className="space-y-6 min-w-0">
 

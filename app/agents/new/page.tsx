@@ -4,7 +4,6 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { getIntegrationIcon } from "@/lib/integration-icons";
 import { 
   Sparkles, 
@@ -26,8 +25,6 @@ import {
   Code,
   Webhook,
   Calendar,
-  Settings,
-  Shield,
 } from "lucide-react";
 import Link from "next/link";
 import { Switch } from "@/components/ui/switch";
@@ -102,6 +99,11 @@ const llmProviders = [
   },
 ];
 
+const getProviderColor = (providerName: string) => {
+  const provider = llmProviders.find(p => p.name === providerName);
+  return provider?.color || "text-purple-500";
+};
+
 // Schedule trigger type
 interface ScheduleTrigger {
   id: string;
@@ -163,21 +165,6 @@ export default function NewAgentPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Reset selected index when filter changes
-  useEffect(() => {
-    setSelectedMentionIndex(0);
-  }, [mentionFilter]);
-
-  const getProviderIcon = (providerName: string) => {
-    const provider = llmProviders.find(p => p.name === providerName);
-    return provider?.icon || Sparkles;
-  };
-
-  const getProviderColor = (providerName: string) => {
-    const provider = llmProviders.find(p => p.name === providerName);
-    return provider?.color || "text-purple-500";
-  };
-
   const selectModel = (providerName: string, model: typeof llmProviders[0]["models"][0]) => {
     setSelectedModel({ provider: providerName, model });
     setIsModelDropdownOpen(false);
@@ -193,6 +180,7 @@ export default function NewAgentPage() {
     }
     setShowMentionDropdown(false);
     setMentionFilter("");
+    setSelectedMentionIndex(0);
     
     // Remove the @mention text from the content
     if (contentRef.current) {
@@ -242,6 +230,7 @@ export default function NewAgentPage() {
       // Check if we're still typing the mention (no space after @)
       if (/^[a-zA-Z0-9]*$/.test(textAfterAt)) {
         setMentionFilter(textAfterAt);
+        setSelectedMentionIndex(0);
         
         // Get cursor position for dropdown
         const rect = range.getBoundingClientRect();
@@ -336,7 +325,8 @@ export default function NewAgentPage() {
     );
   };
 
-  const ProviderIcon = getProviderIcon(selectedModel.provider);
+  const selectedProvider = llmProviders.find(p => p.name === selectedModel.provider);
+  const ProviderIcon = selectedProvider?.icon || Sparkles;
 
   return (
     <div className="flex flex-col h-screen bg-stone-950">
@@ -555,7 +545,7 @@ export default function NewAgentPage() {
                       className="bg-stone-800 border-stone-700 text-stone-200 placeholder:text-stone-500 font-mono"
                     />
                     <p className="text-xs text-stone-500">
-                      Example: "0 8 * * 1" = Every Monday at 8 AM
+                      Example: &quot;0 8 * * 1&quot; = Every Monday at 8 AM
                     </p>
                   </div>
                   <div className="space-y-2">
@@ -773,7 +763,7 @@ export default function NewAgentPage() {
             <div className="p-5 border-b border-stone-800 shrink-0">
               <h2 className="font-semibold text-stone-100">Agent builder</h2>
               <p className="text-sm text-stone-400 mt-1">
-                I'll help you create {agentName || "your agent"}
+                I&apos;ll help you create {agentName || "your agent"}
               </p>
             </div>
 
@@ -795,9 +785,9 @@ export default function NewAgentPage() {
                   I can help you build this agent. Try:
                 </p>
                 <ul className="mt-2 space-y-1 text-sm text-stone-400">
-                  <li>- "Create an agent that monitors competitors"</li>
-                  <li>- "Add Slack notifications"</li>
-                  <li>- "What integrations should I use?"</li>
+                  <li>- &quot;Create an agent that monitors competitors&quot;</li>
+                  <li>- &quot;Add Slack notifications&quot;</li>
+                  <li>- &quot;What integrations should I use?&quot;</li>
                 </ul>
               </div>
             </div>

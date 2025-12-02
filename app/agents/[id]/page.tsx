@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, use } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +10,6 @@ import { mockAgents } from "@/lib/data/mock-data";
 import { getTriggersByAgentId } from "@/lib/data/triggers-data";
 import { formatRelativeTime } from "@/lib/utils";
 import { getIntegrationIcon } from "@/lib/integration-icons";
-import type { AgentTrigger } from "@/lib/types";
 import {
   ArrowLeft,
   Play,
@@ -36,31 +35,11 @@ interface AgentDetailPageProps {
 }
 
 export default function AgentDetailPage({ params }: AgentDetailPageProps) {
-  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
+  const { id } = use(params);
   const [isBuilderOpen, setIsBuilderOpen] = useState(true);
-  const [triggers, setTriggers] = useState<AgentTrigger[]>([]);
-
-  useEffect(() => {
-    params.then(setResolvedParams);
-  }, [params]);
-
-  useEffect(() => {
-    if (resolvedParams) {
-      setTriggers(getTriggersByAgentId(resolvedParams.id));
-    }
-  }, [resolvedParams]);
-
-  if (!resolvedParams) {
-    return (
-      <div className="flex flex-col h-screen bg-stone-950">
-        <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center border-b border-stone-800 bg-stone-950 px-4">
-          <div className="text-stone-400">Loading...</div>
-        </header>
-      </div>
-    );
-  }
-
-  const agent = mockAgents.find((a) => a.id === resolvedParams.id);
+  
+  const triggers = getTriggersByAgentId(id);
+  const agent = mockAgents.find((a) => a.id === id);
 
   if (!agent) {
     notFound();

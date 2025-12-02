@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -49,20 +49,16 @@ export default function WebhookDetailPage() {
   const params = useParams();
   const webhookId = params.id as string;
 
-  const [webhook, setWebhook] = useState<Webhook | null>(null);
-  const [deliveries, setDeliveries] = useState<WebhookDelivery[]>([]);
+  return <WebhookContent key={webhookId} webhookId={webhookId} />;
+}
+
+function WebhookContent({ webhookId }: { webhookId: string }) {
+  const [webhook] = useState<Webhook | null>(() => getWebhookById(webhookId) || null);
+  const [deliveries] = useState<WebhookDelivery[]>(() => getWebhookDeliveries(webhookId));
   const [copiedUrl, setCopiedUrl] = useState(false);
   const [copiedSecret, setCopiedSecret] = useState(false);
   const [showSecret, setShowSecret] = useState(false);
   const [expandedDelivery, setExpandedDelivery] = useState<string | null>(null);
-
-  useEffect(() => {
-    const wh = getWebhookById(webhookId);
-    if (wh) {
-      setWebhook(wh);
-      setDeliveries(getWebhookDeliveries(webhookId));
-    }
-  }, [webhookId]);
 
   if (!webhook) {
     return (

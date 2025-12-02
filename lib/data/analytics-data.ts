@@ -377,7 +377,6 @@ export function getAnalyticsSummary(range: "7d" | "14d" | "30d") {
   const totalCost = costData.reduce((sum, d) => sum + d.cost, 0);
   const totalExecutions = costData.reduce((sum, d) => sum + d.executions, 0);
   
-  const hourlyUsage = getHourlyUsage(range);
   const integrationUsage = getIntegrationUsage(range);
   const totalApiCalls = integrationUsage.reduce((sum, i) => sum + i.callCount, 0);
   

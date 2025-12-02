@@ -23,6 +23,7 @@ import { Clock, AlertTriangle } from "lucide-react";
 
 export default function Home() {
   const [dateRange, setDateRange] = useState<"7d" | "14d" | "30d">("7d");
+  const [now] = useState(() => Date.now());
 
   const stats = mockDashboardStats;
   const costData = getAnalyticsData(dateRange);
@@ -34,7 +35,7 @@ export default function Home() {
   ).length;
   const recentFailures = mockExecutionTraces.filter((t) => {
     const executionTime = new Date(t.startedAt).getTime();
-    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+    const oneDayAgo = now - 24 * 60 * 60 * 1000;
     return t.status === "failed" && executionTime > oneDayAgo;
   }).length;
 

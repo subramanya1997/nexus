@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getIntegrationIcon } from "@/lib/integration-icons";
-import type { SelectedTool, ToolParameter } from "@/lib/types";
+import type { SelectedTool } from "@/lib/types";
 import {
   Play,
   Loader2,
@@ -134,33 +134,36 @@ export function TestConsole({ tools, serverUrl }: TestConsoleProps) {
     setResult(null);
 
     // Simulate API call with random delay
-    const delay = 200 + Math.random() * 800;
-    await new Promise((resolve) => setTimeout(resolve, delay));
+    await new Promise<void>((resolve) => {
+      const delay = 200 + Math.random() * 800;
+      setTimeout(() => {
+        // Randomly fail ~10% of requests for realism
+        const shouldFail = Math.random() < 0.1;
 
-    // Randomly fail ~10% of requests for realism
-    const shouldFail = Math.random() < 0.1;
+        const testResult: TestResult = {
+          success: !shouldFail,
+          duration: Math.round(delay),
+          timestamp: new Date().toISOString(),
+          request: {
+            method: "POST",
+            tool: selectedTool.toolName,
+            params: Object.fromEntries(
+              Object.entries(params).filter((entry) => entry[1] !== "")
+            ),
+          },
+        };
 
-    const testResult: TestResult = {
-      success: !shouldFail,
-      duration: Math.round(delay),
-      timestamp: new Date().toISOString(),
-      request: {
-        method: "POST",
-        tool: selectedTool.toolName,
-        params: Object.fromEntries(
-          Object.entries(params).filter(([_, v]) => v !== "")
-        ),
-      },
-    };
+        if (shouldFail) {
+          testResult.error = "Simulated error: Rate limit exceeded. Please try again.";
+        } else {
+          testResult.response = generateMockResponse(selectedTool, testResult.request.params);
+        }
 
-    if (shouldFail) {
-      testResult.error = "Simulated error: Rate limit exceeded. Please try again.";
-    } else {
-      testResult.response = generateMockResponse(selectedTool, testResult.request.params);
-    }
-
-    setResult(testResult);
-    setIsExecuting(false);
+        setResult(testResult);
+        setIsExecuting(false);
+        resolve();
+      }, delay);
+    });
   };
 
   const copyToClipboard = (text: string, type: "request" | "response") => {
@@ -182,7 +185,7 @@ export function TestConsole({ tools, serverUrl }: TestConsoleProps) {
           params: {
             name: selectedTool.toolName,
             arguments: Object.fromEntries(
-              Object.entries(params).filter(([_, v]) => v !== "")
+              Object.entries(params).filter((entry) => entry[1] !== "")
             ),
           },
           id: 1,
