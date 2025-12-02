@@ -40,7 +40,7 @@ export function IntegrationsTab({ dateRange }: IntegrationsTabProps) {
         <StatsCard
           title="Total API Calls"
           value={summary.totalApiCalls.toLocaleString()}
-          change="+12.4% from last period"
+          change="+12.4%"
           changeType="positive"
         />
         <StatsCard

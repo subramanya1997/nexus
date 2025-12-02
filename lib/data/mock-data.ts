@@ -1,4 +1,4 @@
-// Mock data for Nexus platform
+// Mock data for Agentic Trust platform
 // Types are now centralized in @/lib/types.ts
 
 import type {

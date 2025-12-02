@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { cookies } from "next/headers";
 import "./globals.css";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
@@ -10,19 +11,23 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Nexus - AI Agent Infrastructure Platform",
+  title: "Agentic Trust - AI Agent Infrastructure Platform",
   description: "Build, deploy, and govern AI agents at scale",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const sidebarState = cookieStore.get("sidebar_state");
+  const defaultOpen = sidebarState ? sidebarState.value === "true" : true;
+
   return (
     <html lang="en" className="dark">
       <body className={`${inter.variable} font-sans antialiased`}>
-        <SidebarProvider>
+        <SidebarProvider defaultOpen={defaultOpen}>
           <AppSidebar />
           <SidebarInset>
         {children}

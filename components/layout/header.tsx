@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { Bell, Search, HelpCircle, ChevronRight, Sparkles, Clock, Copy, MoreHorizontal, PanelRight, PanelRightClose } from "lucide-react";
+import { Bell, HelpCircle, ChevronRight, Sparkles, Clock, Copy, MoreHorizontal, PanelRight, PanelRightClose } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { Plus } from "lucide-react";
 
 interface HeaderProps {
+  // Page subtitle to display in header
+  subtitle?: string;
   // For agent builder page
   agentMode?: boolean;
   agentName?: string;
@@ -19,6 +20,7 @@ interface HeaderProps {
 }
 
 export function Header({ 
+  subtitle,
   agentMode = false, 
   agentName = "",
   onAgentNameChange,
@@ -26,12 +28,19 @@ export function Header({
   onToggleBuilder,
   actionButton
 }: HeaderProps) {
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
+
   if (agentMode) {
     return (
       <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center justify-between border-b border-stone-800 bg-stone-950 px-4">
         <div className="flex items-center gap-2">
-          <SidebarTrigger className="-ml-1 text-stone-400 hover:text-stone-200" />
-          <Separator orientation="vertical" className="mx-2 h-4 bg-stone-700" />
+          {!isCollapsed && (
+            <>
+              <SidebarTrigger className="-ml-1 text-stone-400 hover:text-stone-200" />
+              <Separator orientation="vertical" className="mx-2 h-4 bg-stone-700" />
+            </>
+          )}
           
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-sm">
@@ -84,26 +93,17 @@ export function Header({
     );
   }
 
-  // Default header with search
+  // Default header
   return (
     <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-4 border-b border-stone-800 bg-stone-950 px-4 min-w-0">
-      <SidebarTrigger className="-ml-1 text-stone-400 hover:text-stone-200 shrink-0" />
-      <Separator orientation="vertical" className="h-4 bg-stone-700 shrink-0" />
-      
-      {/* Search */}
-      <div className="flex-1 max-w-xl min-w-0">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-500" />
-          <input
-            type="text"
-            placeholder="Search agents, executions..."
-            className="w-full rounded-md border border-stone-700 bg-stone-900 py-1.5 pl-9 pr-4 text-sm text-stone-200 placeholder:text-stone-500 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition-colors"
-          />
-        </div>
+      <div className="flex items-center gap-3 mr-auto">
+        {!isCollapsed && (
+          <SidebarTrigger className="-ml-1 text-stone-400 hover:text-stone-200 shrink-0" />
+        )}
+        {subtitle && (
+          <span className="text-sm text-stone-400">{subtitle}</span>
+        )}
       </div>
-
-      {/* Spacer */}
-      <div className="flex-1 min-w-0" />
 
       {/* Actions */}
       <div className="flex items-center gap-1 shrink-0">
@@ -114,17 +114,10 @@ export function Header({
           <Bell className="h-4 w-4" />
           <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500"></span>
         </Button>
-        {actionButton !== null && (
+        {actionButton && (
           <>
             <Separator orientation="vertical" className="mx-2 h-4 bg-stone-700" />
-            {actionButton ?? (
-              <Link href="/agents/new">
-                <Button size="sm" className="bg-amber-600 hover:bg-amber-500 text-white font-medium">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create Agent
-                </Button>
-              </Link>
-            )}
+            {actionButton}
           </>
         )}
       </div>

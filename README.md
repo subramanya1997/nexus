@@ -1,6 +1,6 @@
-# Nexus - AI Agent Infrastructure Platform (Mockup)
+# Agentic Trust - AI Agent Infrastructure Platform (Mockup)
 
-A fully functional mockup of the Nexus platform built with Next.js 16, TypeScript, and Tailwind CSS.
+A fully functional mockup of the Agentic Trust platform built with Next.js 16, TypeScript, and Tailwind CSS.
 
 ## Features
 
@@ -191,4 +191,4 @@ nexus-mockup/
 
 ## Notes
 
-This is a frontend mockup demonstrating the UI/UX of the Nexus platform. All data is mocked and no backend is required to run this application.
+This is a frontend mockup demonstrating the UI/UX of the Agentic Trust platform. All data is mocked and no backend is required to run this application.

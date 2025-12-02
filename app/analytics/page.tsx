@@ -47,28 +47,12 @@ export default function AnalyticsPage() {
   return (
     <>
       <Header
+        subtitle="Track performance, costs, and usage across your AI infrastructure"
         actionButton={
-          <Button size="sm" className="bg-amber-600 hover:bg-amber-500 text-white font-medium">
-            <Download className="h-4 w-4 mr-2" />
-            Export Report
-          </Button>
-        }
-      />
-      <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
-        <div className="space-y-6 min-w-0">
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-stone-50">Analytics</h1>
-              <p className="mt-1 text-sm text-stone-400">
-                Track performance, costs, and usage across your AI infrastructure
-              </p>
-            </div>
-            
-            {/* Date Range Picker */}
+          <div className="flex items-center gap-2">
             <Select value={dateRange} onValueChange={(value: DateRange) => setDateRange(value)}>
-              <SelectTrigger className="w-[160px] border-stone-700 bg-stone-900 text-stone-300">
-                <Calendar className="mr-2 h-4 w-4" />
+              <SelectTrigger className="w-[140px] border-stone-700 bg-stone-900 text-stone-300 h-8">
+                <Calendar className="mr-2 h-3.5 w-3.5" />
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="border-stone-700 bg-stone-900">
@@ -83,7 +67,15 @@ export default function AnalyticsPage() {
                 </SelectItem>
               </SelectContent>
             </Select>
+            <Button size="sm" className="bg-amber-600 hover:bg-amber-500 text-white font-medium h-8">
+              <Download className="h-3.5 w-3.5 mr-2" />
+              Export
+            </Button>
           </div>
+        }
+      />
+      <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
+        <div className="space-y-6 min-w-0">
 
           {/* Tab Navigation */}
           <div className="flex items-center gap-1 bg-stone-900 p-1 rounded-lg w-fit border border-stone-800">

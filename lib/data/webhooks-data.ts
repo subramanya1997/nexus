@@ -1,4 +1,4 @@
-// Webhooks data and types for Nexus platform
+// Webhooks data and types for Agentic Trust platform
 
 // ============ Webhook Types ============
 export type WebhookStatus = "active" | "inactive";

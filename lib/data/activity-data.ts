@@ -1,4 +1,4 @@
-// Activity and execution trace mock data for Nexus platform
+// Activity and execution trace mock data for Agentic Trust platform
 
 import type {
   ExecutionTrace,

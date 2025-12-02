@@ -44,7 +44,7 @@ export function CostsTab({
         <StatsCard
           title="Total Cost"
           value={formatCurrency(totalCost)}
-          change="-5.2% from last period"
+          change="-5.2%"
           changeType="positive"
         />
         <StatsCard
@@ -56,7 +56,7 @@ export function CostsTab({
         <StatsCard
           title="Total Executions"
           value={totalExecutions.toLocaleString()}
-          change="+8.3% from last period"
+          change="+8.3%"
           changeType="positive"
         />
         <StatsCard

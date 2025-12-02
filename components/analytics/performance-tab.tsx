@@ -42,7 +42,7 @@ export function PerformanceTab({ dateRange }: PerformanceTabProps) {
         <StatsCard
           title="Avg Success Rate"
           value={`${avgSuccessRate.toFixed(1)}%`}
-          change="+2.3% from last period"
+          change="+2.3%"
           changeType="positive"
         />
         <StatsCard

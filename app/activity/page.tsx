@@ -84,34 +84,12 @@ export default function ActivityPage() {
   return (
     <>
       <Header
+        subtitle="Monitor agent executions, traces, and audit logs"
         actionButton={
-          <Button
-            size="sm"
-            variant="outline"
-            className="border-stone-700 text-stone-300 hover:bg-stone-800"
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-          >
-            <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
-            Refresh
-          </Button>
-        }
-      />
-      <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
-        <div className="space-y-6 min-w-0">
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-stone-50">Activity</h1>
-              <p className="mt-1 text-sm text-stone-400">
-                Monitor agent executions, traces, and audit logs
-              </p>
-            </div>
-
-            {/* Date Range Picker */}
+          <div className="flex items-center gap-2">
             <Select value={dateRange} onValueChange={(value: DateRange) => setDateRange(value)}>
-              <SelectTrigger className="w-[160px] border-stone-700 bg-stone-900 text-stone-300">
-                <Calendar className="mr-2 h-4 w-4" />
+              <SelectTrigger className="w-[140px] border-stone-700 bg-stone-900 text-stone-300 h-8">
+                <Calendar className="mr-2 h-3.5 w-3.5" />
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="border-stone-700 bg-stone-900">
@@ -126,7 +104,21 @@ export default function ActivityPage() {
                 </SelectItem>
               </SelectContent>
             </Select>
+            <Button
+              size="sm"
+              variant="outline"
+              className="border-stone-700 text-stone-300 hover:bg-stone-800 h-8"
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+            >
+              <RefreshCw className={`h-3.5 w-3.5 mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
           </div>
+        }
+      />
+      <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
+        <div className="space-y-6 min-w-0">
 
           {/* Tab Navigation + Filters Row */}
           <div className="flex items-center justify-between gap-4 flex-wrap">

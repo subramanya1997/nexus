@@ -55,18 +55,9 @@ export default function AgentsPage() {
 
   return (
     <>
-      <Header />
+      <Header subtitle="Manage and monitor your AI agents" />
       <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
         <div className="space-y-6 min-w-0">
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-stone-50">Agents</h1>
-              <p className="mt-1 text-sm text-stone-400">
-                Manage and monitor your AI agents
-              </p>
-            </div>
-          </div>
 
           {/* Filters Row */}
           <div className="flex items-center gap-4 flex-wrap">

@@ -46,6 +46,7 @@ export default function MCPRegistryPage() {
   return (
     <>
       <Header
+        subtitle="Custom MCP servers with tools from integrations and agents"
         actionButton={
           <Link href="/mcp-registry/new">
             <Button className="bg-amber-600 hover:bg-amber-500 text-white">
@@ -57,13 +58,6 @@ export default function MCPRegistryPage() {
       />
       <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
         <div className="space-y-6 min-w-0">
-          {/* Header */}
-          <div>
-            <h1 className="text-2xl font-bold text-stone-50">MCP Registry</h1>
-            <p className="mt-1 text-sm text-stone-400">
-              Custom MCP servers with tools from integrations and agents
-            </p>
-          </div>
 
           {/* Search & Filters */}
           <div className="flex items-center gap-4 flex-wrap">

@@ -1,4 +1,4 @@
-// Centralized TypeScript types for Nexus platform
+// Centralized TypeScript types for Agentic Trust platform
 
 // ============ Agent Types ============
 export type AgentStatus = "active" | "paused" | "deprecated";

@@ -11,7 +11,7 @@ export function ServerStats({ server }: ServerStatsProps) {
       <StatsCard
         title="Total Calls"
         value={server.stats.totalCalls.toLocaleString()}
-        change="+12% vs last week"
+        change="+12%"
         changeType="positive"
       />
       <StatsCard
@@ -29,7 +29,7 @@ export function ServerStats({ server }: ServerStatsProps) {
       <StatsCard
         title="Unique Clients"
         value={server.stats.uniqueClients}
-        change="+3 this week"
+        change="+3"
         changeType="positive"
       />
       <StatsCard

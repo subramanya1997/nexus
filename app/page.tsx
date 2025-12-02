@@ -1,58 +1,84 @@
 "use client";
 
 import { useState } from "react";
-import { StatsCard } from "@/components/dashboard/stats-card";
-import { RecentExecutions } from "@/components/dashboard/recent-executions";
-import { ActiveAgents } from "@/components/dashboard/active-agents";
-import { Header } from "@/components/layout/header";
+import Link from "next/link";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  StatsCard,
+  ExecutionTrend,
+  QuickActions,
+  RecentActivity,
+} from "@/components/dashboard";
+import { Header } from "@/components/layout/header";
+import { Badge } from "@/components/ui/badge";
 import {
   mockDashboardStats,
   mockExecutions,
-  mockAgents,
 } from "@/lib/data/mock-data";
+import {
+  getAnalyticsData,
+} from "@/lib/data/analytics-data";
+import { mockExecutionTraces } from "@/lib/data/activity-data";
 import { formatCurrency, formatPercentage } from "@/lib/utils";
+import { Clock, AlertTriangle } from "lucide-react";
 
 export default function Home() {
-  const [dateRange, setDateRange] = useState("30d");
+  const [dateRange, setDateRange] = useState<"7d" | "14d" | "30d">("7d");
+
   const stats = mockDashboardStats;
-  const recentExecutions = mockExecutions.slice(0, 5);
-  const activeAgents = mockAgents.filter((a) => a.status === "active").slice(0, 3);
+  const costData = getAnalyticsData(dateRange);
+  const recentExecutions = mockExecutionTraces.slice(0, 10);
+
+  // Calculate action items
+  const pendingApprovals = mockExecutions.filter(
+    (e) => e.status === "waiting_approval"
+  ).length;
+  const recentFailures = mockExecutionTraces.filter((t) => {
+    const executionTime = new Date(t.startedAt).getTime();
+    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+    return t.status === "failed" && executionTime > oneDayAgo;
+  }).length;
+
+  // Create sparkline data for executions
+  const executionSparkline = costData.map((d) => ({ value: d.executions }));
+  const costSparkline = costData.map((d) => ({ value: d.cost }));
+
+  // Calculate totals
+  const totalCost = costData.reduce((sum, d) => sum + d.cost, 0);
+  const projectedMonthly = Math.round((totalCost / (dateRange === "7d" ? 7 : dateRange === "14d" ? 14 : 30)) * 30);
 
   return (
     <>
-      <Header />
+      <Header 
+        subtitle="Monitor your AI agent infrastructure at a glance"
+        actionButton={
+          <div className="flex items-center gap-2">
+            {pendingApprovals > 0 && (
+              <Link href="/activity?status=waiting_approval">
+                <Badge
+                  variant="outline"
+                  className="bg-amber-950/50 text-amber-400 border-amber-800 hover:bg-amber-900/50 cursor-pointer"
+                >
+                  <Clock className="h-3.5 w-3.5 mr-1.5" />
+                  {pendingApprovals} Pending
+                </Badge>
+              </Link>
+            )}
+            {recentFailures > 0 && (
+              <Link href="/activity?status=failed">
+                <Badge
+                  variant="outline"
+                  className="bg-red-950/50 text-red-400 border-red-800 hover:bg-red-900/50 cursor-pointer"
+                >
+                  <AlertTriangle className="h-3.5 w-3.5 mr-1.5" />
+                  {recentFailures} Failed
+                </Badge>
+              </Link>
+            )}
+          </div>
+        }
+      />
       <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
         <div className="space-y-6 min-w-0">
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-stone-50">Overview</h1>
-            <Select value={dateRange} onValueChange={setDateRange}>
-              <SelectTrigger className="w-[140px] border-stone-700 bg-stone-900 text-stone-300">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="border-stone-700 bg-stone-900">
-                <SelectItem value="7d" className="text-stone-300 focus:bg-stone-800 focus:text-stone-100">
-                  Last 7 days
-                </SelectItem>
-                <SelectItem value="14d" className="text-stone-300 focus:bg-stone-800 focus:text-stone-100">
-                  Last 14 days
-                </SelectItem>
-                <SelectItem value="30d" className="text-stone-300 focus:bg-stone-800 focus:text-stone-100">
-                  Last 30 days
-                </SelectItem>
-                <SelectItem value="90d" className="text-stone-300 focus:bg-stone-800 focus:text-stone-100">
-                  Last 90 days
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
 
           {/* Stats Grid */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -67,7 +93,7 @@ export default function Home() {
               value={stats.totalExecutions.toLocaleString()}
               change="+8.3%"
               changeType="positive"
-              usage={{ current: 5972, max: 10000 }}
+              sparkline={{ data: executionSparkline }}
             />
             <StatsCard
               title="Success Rate"
@@ -78,20 +104,28 @@ export default function Home() {
             />
             <StatsCard
               title="Total Cost"
-              value={formatCurrency(stats.totalCost)}
-              change="-5.2%"
-              changeType="positive"
+              value={formatCurrency(totalCost)}
+              change={`~${formatCurrency(projectedMonthly)}/mo projected`}
+              changeType="neutral"
+              sparkline={{ data: costSparkline, color: "#22c55e" }}
             />
           </div>
 
-          {/* Two Column Layout */}
-          <div className="grid gap-6 lg:grid-cols-2">
-            {/* Recent Executions */}
-            <RecentExecutions executions={recentExecutions} />
+          {/* Execution Trend + Recent Activity Side by Side */}
+          <div className="grid gap-6 lg:grid-cols-[1fr_0.43fr]">
+            {/* Execution Trend Chart - 70% */}
+            <ExecutionTrend
+              data={costData}
+              dateRange={dateRange}
+              onDateRangeChange={setDateRange}
+            />
 
-            {/* Active Agents */}
-            <ActiveAgents agents={activeAgents} />
+            {/* Recent Activity - 30% */}
+            <RecentActivity executions={recentExecutions} />
           </div>
+
+          {/* Quick Actions Footer */}
+          <QuickActions />
         </div>
       </main>
     </>

@@ -5,7 +5,6 @@ import Image from "next/image"
 import {
   LayoutDashboard,
   Bot,
-  Zap,
   HelpCircle,
   Activity,
   BookOpen,
@@ -14,24 +13,22 @@ import {
   BarChart3,
   Webhook,
   Building2,
+  Zap,
 } from "lucide-react"
 
 // Custom MCP icon component to match Lucide icon interface
-const McpIcon = React.forwardRef<
-  HTMLSpanElement,
-  React.HTMLAttributes<HTMLSpanElement>
->(({ className, ...props }, ref) => (
-  <span ref={ref} className={className} {...props}>
+// Using inline SVG to ensure proper sizing in collapsed sidebar state
+function McpIcon({ className }: { className?: string }) {
+  return (
     <Image
       src="/icons/mcp.svg"
       alt="MCP"
       width={16}
       height={16}
-      className="size-4 brightness-0 invert"
+      className={`brightness-0 invert shrink-0 ${className || ""}`}
     />
-  </span>
-)) as React.FC
-McpIcon.displayName = "McpIcon"
+  )
+}
 
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
@@ -43,6 +40,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar"
 
 const data = {
@@ -117,38 +116,43 @@ const data = {
     },
     {
       title: "Help",
-      url: "#",
+      url: "/help",
       icon: HelpCircle,
     },
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+function SidebarHeaderContent() {
+  const { state } = useSidebar()
+  const isCollapsed = state === "collapsed"
+
   return (
-    <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
+    <SidebarHeader>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          {isCollapsed ? (
+            <SidebarTrigger className="size-8 mx-auto text-stone-400 hover:text-stone-200 hover:bg-stone-800" />
+          ) : (
             <SidebarMenuButton
               asChild
               size="lg"
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
+              className="data-[slot=sidebar-menu-button]:!p-2 hover:bg-transparent"
             >
-              <a href="/">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500 to-orange-600">
-                  <Zap className="size-4 text-white" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Nexus</span>
-                  <span className="truncate text-xs text-muted-foreground">
-                    AI Agent Platform
-                  </span>
-                </div>
+              <a href="/" className="flex items-center gap-2">
+                <span className="text-base font-semibold text-stone-100">Agentic Trust</span>
               </a>
             </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
+          )}
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarHeader>
+  )
+}
+
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  return (
+    <Sidebar collapsible="icon" {...props}>
+      <SidebarHeaderContent />
       <SidebarContent>
         <NavMain items={data.dashboard} />
         <NavMain items={data.build} label="Build" />

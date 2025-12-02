@@ -134,7 +134,7 @@ export default function NewMCPServerPage() {
 
   return (
     <>
-      <Header />
+      <Header subtitle="Create a custom MCP server with tools from integrations and agents" />
       <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
         <div className="max-w-4xl mx-auto space-y-6">
           {/* Back Link */}
@@ -145,14 +145,6 @@ export default function NewMCPServerPage() {
             <ArrowLeft className="h-4 w-4" />
             Back to MCP Registry
           </Link>
-
-          {/* Header */}
-          <div>
-            <h1 className="text-2xl font-bold text-stone-50">Create MCP Server</h1>
-            <p className="mt-1 text-sm text-stone-400">
-              Build a custom MCP server by selecting tools from your integrations and agents
-            </p>
-          </div>
 
           {/* Progress Steps */}
           <div className="flex items-center justify-between">

@@ -1,4 +1,4 @@
-// Enhanced analytics data for Nexus platform
+// Enhanced analytics data for Agentic Trust platform
 
 import type {
   AgentPerformanceData,

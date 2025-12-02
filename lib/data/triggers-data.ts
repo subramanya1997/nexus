@@ -1,4 +1,4 @@
-// Triggers data for Nexus platform
+// Triggers data for Agentic Trust platform
 import type { AgentTrigger } from "@/lib/types";
 
 export const mockTriggers: AgentTrigger[] = [

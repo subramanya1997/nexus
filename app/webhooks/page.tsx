@@ -94,6 +94,7 @@ export default function WebhooksPage() {
   return (
     <>
       <Header
+        subtitle="Trigger agents from external services via HTTP endpoints"
         actionButton={
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
@@ -197,15 +198,6 @@ export default function WebhooksPage() {
       />
       <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
         <div className="space-y-6 min-w-0">
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-stone-50">Webhooks</h1>
-              <p className="mt-1 text-sm text-stone-400">
-                Trigger agents from external services via HTTP endpoints
-              </p>
-            </div>
-          </div>
 
           {/* Filters Row */}
           <div className="flex items-center gap-4 flex-wrap">

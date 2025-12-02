@@ -46,17 +46,11 @@ export default function IntegrationsPage() {
   return (
     <>
       <Header 
+        subtitle="Connect third-party services to extend agent capabilities"
         actionButton={<AddIntegrationDialog />}
       />
       <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
         <div className="space-y-6 min-w-0">
-          {/* Header */}
-          <div>
-            <h1 className="text-2xl font-bold text-stone-50">Integrations</h1>
-            <p className="mt-1 text-sm text-stone-400">
-              Connect third-party services to extend agent capabilities
-            </p>
-          </div>
 
           {/* Search */}
           <div className="relative max-w-md">

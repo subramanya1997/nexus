@@ -9,7 +9,9 @@ import {
 } from "@/components/ui/avatar"
 import {
   SidebarMenu,
+  SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 
 export function NavUser({
@@ -21,27 +23,39 @@ export function NavUser({
     avatar: string
   }
 }) {
+  const { state } = useSidebar()
+  const isCollapsed = state === "collapsed"
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <div className="flex w-full items-center gap-2 rounded-md p-2">
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="text-muted-foreground truncate text-xs">
-                  {user.email}
-                </span>
-              </div>
-          <button 
-            className="ml-auto p-1.5 rounded-md hover:bg-stone-800 text-stone-400 hover:text-stone-200 transition-colors"
-            title="Log out"
+        {isCollapsed ? (
+          <SidebarMenuButton
+            tooltip="Log out"
+            className="flex items-center justify-center"
           >
             <LogOut className="size-4" />
-          </button>
-              </div>
+          </SidebarMenuButton>
+        ) : (
+          <div className="flex w-full items-center gap-2 rounded-md p-2">
+            <Avatar className="h-8 w-8 rounded-lg grayscale">
+              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+            </Avatar>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-medium">{user.name}</span>
+              <span className="text-muted-foreground truncate text-xs">
+                {user.email}
+              </span>
+            </div>
+            <SidebarMenuButton
+              tooltip="Log out"
+              className="ml-auto size-8 p-0"
+            >
+              <LogOut className="size-4" />
+            </SidebarMenuButton>
+          </div>
+        )}
       </SidebarMenuItem>
     </SidebarMenu>
   )

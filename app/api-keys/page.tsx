@@ -32,6 +32,7 @@ export default function ApiKeysPage() {
   return (
     <>
       <Header
+        subtitle="Manage API keys for programmatic access"
         actionButton={
           <Button size="sm" className="bg-amber-600 hover:bg-amber-500 text-white">
             <Plus className="h-4 w-4 mr-2" />
@@ -41,10 +42,6 @@ export default function ApiKeysPage() {
       />
       <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
         <div className="space-y-6 min-w-0">
-          <div>
-            <h1 className="text-2xl font-bold text-stone-50">API Keys</h1>
-            <p className="mt-1 text-sm text-stone-400">Manage API keys for programmatic access</p>
-          </div>
 
           <Card className="bg-stone-900 border-stone-800">
             <CardContent className="p-0">

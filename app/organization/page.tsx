@@ -39,14 +39,9 @@ export default function OrganizationPage() {
 
   return (
     <>
-      <Header actionButton={null} />
+      <Header subtitle="Manage your organization settings and preferences" />
       <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
         <div className="space-y-6 min-w-0">
-          {/* Header */}
-          <div>
-            <h1 className="text-2xl font-bold text-stone-50">Organization</h1>
-            <p className="mt-1 text-sm text-stone-400">Manage your organization settings and preferences</p>
-          </div>
 
           {/* Tab Navigation - Team page style */}
           <div className="flex items-center justify-between">
